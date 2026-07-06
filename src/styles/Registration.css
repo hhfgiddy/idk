@@ -1,0 +1,214 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+@font-face{
+    font-family:"LoveLive";
+    src:url("../assets/fonts/Love%20Live.ttf") format("truetype");
+}
+
+body{
+    font-family:"LoveLive",sans-serif;
+    min-height:100vh;
+    background:linear-gradient(180deg,#ffb6c8,#ffd6b5);
+    overflow:hidden;
+}
+
+/* Background animation */
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background:
+    radial-gradient(circle at 20% 20%,rgba(255,255,255,.18),transparent 30%),
+    radial-gradient(circle at 80% 70%,rgba(255,255,255,.15),transparent 35%);
+    animation:bgMove 8s ease-in-out infinite alternate;
+    z-index:-2;
+}
+
+@keyframes bgMove{
+    from{
+        transform:translateY(-20px);
+    }
+    to{
+        transform:translateY(20px);
+    }
+}
+
+.container{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    padding:20px;
+    animation:fade 1s ease;
+}
+
+@keyframes fade{
+    from{
+        opacity:0;
+        transform:translateY(40px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+h1,p,label{
+    color:white;
+    text-shadow:
+    0 0 8px rgba(255,255,255,.6),
+    0 0 15px rgba(255,180,210,.6);
+}
+
+.title{
+    font-size:42px;
+    margin-bottom:18px;
+    animation:float 3s ease-in-out infinite;
+}
+
+@keyframes float{
+    0%,100%{
+        transform:translateY(0);
+    }
+    50%{
+        transform:translateY(-8px);
+    }
+}
+
+.text,
+.test{
+    font-size:24px;
+    margin-bottom:10px;
+}
+
+label{
+    font-size:22px;
+    margin-top:15px;
+    margin-bottom:10px;
+}
+
+.name-inp,
+.key-inp{
+    width:90%;
+    max-width:330px;
+    height:48px;
+    border-radius:30px;
+    border:2px solid rgba(255,255,255,.8);
+    background:rgba(255,255,255,.15);
+    backdrop-filter:blur(12px);
+    color:white;
+    padding:0 20px;
+    font-size:18px;
+    transition:.35s;
+    margin-bottom:30px;
+}
+
+.name-inp::placeholder,
+.key-inp::placeholder{
+    color:rgba(255,255,255,.85);
+}
+
+.name-inp:focus,
+.key-inp:focus{
+    outline:none;
+    transform:scale(1.04);
+    background:rgba(255,255,255,.25);
+    box-shadow:
+    0 0 15px #fff,
+    0 0 30px #ff9ed2;
+}
+
+button{
+    width:190px;
+    height:48px;
+    border:none;
+    border-radius:30px;
+    background:white;
+    color:#ff7eb3;
+    font-family:"LoveLive";
+    font-size:22px;
+    cursor:pointer;
+    transition:.3s;
+    box-shadow:0 8px 20px rgba(255,120,180,.35);
+    animation:pulse 2s infinite;
+}
+
+button:hover{
+    transform:translateY(-4px) scale(1.05);
+    box-shadow:0 12px 28px rgba(255,120,180,.45);
+}
+
+button:active{
+    transform:scale(.95);
+}
+
+@keyframes pulse{
+    0%{
+        box-shadow:0 0 0 0 rgba(255,255,255,.7);
+    }
+    70%{
+        box-shadow:0 0 0 18px transparent;
+    }
+    100%{
+        box-shadow:0 0 0 0 transparent;
+    }
+}
+
+/* Floating hearts */
+
+body::after{
+    content:"💖  💕  🤍  💗";
+    position:fixed;
+    left:-10%;
+    bottom:-30px;
+    width:120%;
+    text-align:center;
+    font-size:22px;
+    opacity:.45;
+    animation:hearts 18s linear infinite;
+    pointer-events:none;
+}
+
+@keyframes hearts{
+    from{
+        transform:translateY(0);
+    }
+    to{
+        transform:translateY(-120vh);
+    }
+}
+
+@media(max-width:768px){
+
+.title{
+    font-size:36px;
+}
+
+.text,
+.test{
+    font-size:20px;
+}
+
+label{
+    font-size:20px;
+}
+
+.name-inp,
+.key-inp{
+    max-width:300px;
+    height:46px;
+}
+
+button{
+    width:170px;
+    height:46px;
+    font-size:20px;
+}
+
+}
