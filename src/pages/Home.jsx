@@ -13,12 +13,6 @@ import {
 import { BsStars } from "react-icons/bs";
 import "../styles/Home.css";
 
-/* =========================================================
-   CONTENT GENERATORS
-   Rich, non-repeating pools of romantic copy, built from
-   curated fragments so the messages stay varied on every
-   visit without ever feeling like a templated list.
-========================================================= */
 
 const openers = [
   "Every morning I wake up grateful",
@@ -509,7 +503,7 @@ export default function Home() {
           <div className="hero-image-card">
             <div className="hero-image-glow" />
             <img
-              src="https://placehold.co/500x500/png"
+              src="https://images.unsplash.com/photo-1518895949257-7621c3c786d7?w=500&h=500&fit=crop"
               alt="A romantic illustration made just for you"
               className="hero-image"
             />

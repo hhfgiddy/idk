@@ -1,6 +1,7 @@
-/* =========================================================
-   DESIGN TOKENS
-========================================================= */
+/* ← HOME.CSS BOSHIDAGI SECTION O'ZGARTIRISH ← */
+
+/* LINE 25 - 45 QAVATINI QUYIDAGICHA O'ZGARTIR: */
+
 .home-page {
   --blush-100: #fff1f4;
   --blush-300: #ffd6e0;
@@ -23,15 +24,30 @@
 
   position: relative;
   min-height: 100vh;
+  width: 100%;
   overflow-x: hidden;
+  overflow-y: auto; /* ← QUSHILDI */
   background: linear-gradient(180deg, #ffb6c8 0%, #ffcda7 55%, #ffd6b5 100%);
   background-attachment: fixed;
   font-family: var(--font-body);
   color: var(--ink);
-  padding-bottom: 110px;
+  padding-bottom: 140px; /* ← 120px -> 140px */
   -webkit-font-smoothing: antialiased;
+  scroll-behavior: smooth; /* ← QUSHILDI */
 }
 
+html {
+  scroll-behavior: smooth;
+  height: 100%;
+  overflow-y: auto;
+}
+
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+}
 .home-page * {
   box-sizing: border-box;
 }
@@ -172,9 +188,6 @@
   margin: 0 0 32px;
 }
 
-/* =========================================================
-   HERO
-========================================================= */
 .hero-section {
   position: relative;
   z-index: 1;
@@ -759,7 +772,7 @@
 }
 
 /* =========================================================
-   BOTTOM NAVIGATION
+   BOTTOM NAVIGATION — FIXED
 ========================================================= */
 .bottom-nav {
   position: fixed;
@@ -776,6 +789,8 @@
   backdrop-filter: blur(24px) saturate(160%);
   -webkit-backdrop-filter: blur(24px) saturate(160%);
   box-shadow: var(--shadow-pink);
+  width: auto;
+  max-width: 90vw;
 }
 
 .bottom-nav button {
@@ -791,6 +806,7 @@
   font-size: 0.62rem;
   cursor: pointer;
   transition: color 0.25s ease, background 0.25s ease, transform 0.25s ease;
+  white-space: nowrap;
 }
 .bottom-nav button svg {
   font-size: 1.15rem;
@@ -817,6 +833,10 @@
   .hero-title {
     font-size: clamp(2rem, 9vw, 2.8rem);
   }
+  .bottom-nav {
+    gap: 4px;
+    padding: 10px 12px;
+  }
 }
 
 @media (max-width: 425px) {
@@ -840,10 +860,15 @@
   }
   .bottom-nav {
     gap: 2px;
-    padding: 8px 8px;
+    padding: 8px 10px;
+    bottom: 12px;
   }
   .bottom-nav button {
-    padding: 6px 10px;
+    padding: 6px 12px;
+    font-size: 0.58rem;
+  }
+  .bottom-nav button svg {
+    font-size: 1rem;
   }
 }
 
@@ -856,6 +881,12 @@
   .special-card,
   .surprise-message-card {
     padding: 22px 18px;
+  }
+  .bottom-nav {
+    padding: 6px 8px;
+  }
+  .bottom-nav button {
+    padding: 5px 10px;
   }
 }
 
