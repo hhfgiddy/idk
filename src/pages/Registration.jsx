@@ -3,11 +3,8 @@ import {useNavigate} from 'react-router-dom';
 import '../styles/Registration.css';
 
 function Registration () {
-  // Inputlar uchun state
   const [name, setName] = useState ('');
   const [key, setKey] = useState ('');
-
-  // Sahifa almashtirish
   const navigate = useNavigate ();
 
   // Enter tugmasi bosilganda ishlaydi
@@ -17,11 +14,11 @@ function Registration () {
 
     if (
   userName.toLowerCase() === "sakina" &&
-  userKey.toLowerCase() === "j212012s"
+  userKey.toLowerCase() === "j212013s"
 ) {
   navigate("/home");
 } else {
-  alert("❌ Name yoki Key noto'g'ri!");
+  setError("❌ Name yoki Key noto'g'ri!");
 }
   };
 
