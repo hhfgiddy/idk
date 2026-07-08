@@ -516,52 +516,72 @@ export default function Home() {
 
       {/* ================= FEATURE CARDS ================= */}
       <section className="cards-section" ref={cardsRef}>
-        <div className={`cards-grid ${cardsVisible ? "reveal-in" : "reveal-pending"}`}>
-          <button
-            className="feature-card"
-            style={{ animationDelay: "0.05s" }}
-            onClick={() => scrollTo(surpriseRef)}
-          >
-            <span className="card-icon">💌</span>
-            <span className="card-title">Surprise Box</span>
-            <span className="card-sub">A little something for you</span>
-            <FiChevronRight className="card-arrow" />
-          </button>
+  <div className={`cards-grid ${cardsVisible ? "reveal-in" : "reveal-pending"}`}>
+    <button
+      className="feature-card"
+      style={{ animationDelay: "0.05s" }}
+      onClick={() => scrollTo(surpriseRef)}
+    >
+      <div className="card-content">
+        <span className="card-icon">💌</span>
+        <span className="card-title">Surprise Box</span>
+        <span className="card-sub">A little something for you</span>
+      </div>
+      <div className="card-footer">
+        <span className="card-label">Tap here</span>
+        <FiChevronRight className="card-arrow" />
+      </div>
+    </button>
 
-          <button
-            className="feature-card"
-            style={{ animationDelay: "0.15s" }}
-            onClick={() => scrollTo(surpriseRef)}
-          >
-            <span className="card-icon">🎂</span>
-            <span className="card-title">Special Days</span>
-            <span className="card-sub">Counting every moment</span>
-            <FiChevronRight className="card-arrow" />
-          </button>
+    <button
+      className="feature-card"
+      style={{ animationDelay: "0.15s" }}
+      onClick={() => scrollTo(surpriseRef)}
+    >
+      <div className="card-content">
+        <span className="card-icon">🎂</span>
+        <span className="card-title">Special Days</span>
+        <span className="card-sub">Counting every moment</span>
+      </div>
+      <div className="card-footer">
+        <span className="card-label">Upcoming</span>
+        <FiChevronRight className="card-arrow" />
+      </div>
+    </button>
 
-          <button
-            className="feature-card"
-            style={{ animationDelay: "0.25s" }}
-            onClick={() => scrollTo(loveRef)}
-          >
-            <span className="card-icon">❤️</span>
-            <span className="card-title">Reasons I Love You</span>
-            <span className="card-sub">One hundred and counting</span>
-            <FiChevronRight className="card-arrow" />
-          </button>
+    <button
+      className="feature-card"
+      style={{ animationDelay: "0.25s" }}
+      onClick={() => scrollTo(loveRef)}
+    >
+      <div className="card-content">
+        <span className="card-icon">❤️</span>
+        <span className="card-title">Reasons I Love You</span>
+        <span className="card-sub">One hundred and counting</span>
+      </div>
+      <div className="card-footer">
+        <span className="card-label">Discover</span>
+        <FiChevronRight className="card-arrow" />
+      </div>
+    </button>
 
-          <button
-            className="feature-card"
-            style={{ animationDelay: "0.35s" }}
-            onClick={() => scrollTo(contactRef)}
-          >
-            <span className="card-icon">📩</span>
-            <span className="card-title">Contact Me Anytime</span>
-            <span className="card-sub">I'm always listening</span>
-            <FiChevronRight className="card-arrow" />
-          </button>
-        </div>
-      </section>
+    <button
+      className="feature-card"
+      style={{ animationDelay: "0.35s" }}
+      onClick={() => scrollTo(contactRef)}
+    >
+      <div className="card-content">
+        <span className="card-icon">📩</span>
+        <span className="card-title">Contact Me Anytime</span>
+        <span className="card-sub">I'm always listening</span>
+      </div>
+      <div className="card-footer">
+        <span className="card-label">Message</span>
+        <FiChevronRight className="card-arrow" />
+      </div>
+    </button>
+  </div>
+</section>
 
       {/* ================= SURPRISE BOX ================= */}
       <section className="surprise-section" id="surprise" ref={surpriseRef}>
@@ -663,34 +683,53 @@ export default function Home() {
           />
 
           <div className="upload-grid">
-            <button className="upload-card" onClick={() => imageInputRef.current?.click()}>
-              <FiImage />
-              <span>Upload Image</span>
-              <input
-                type="file"
-                accept="image/*"
-                ref={imageInputRef}
-                onChange={handleImage}
-                hidden
-              />
-            </button>
-            <button className="upload-card" onClick={() => videoInputRef.current?.click()}>
-              <FiVideo />
-              <span>Upload Video</span>
-              <input
-                type="file"
-                accept="video/*"
-                ref={videoInputRef}
-                onChange={handleVideo}
-                hidden
-              />
-            </button>
-            <button className="upload-card" onClick={() => fileInputRef.current?.click()}>
-              <FiFile />
-              <span>Upload File</span>
-              <input type="file" ref={fileInputRef} onChange={handleFile} hidden />
-            </button>
-          </div>
+  <button 
+    className="upload-card" 
+    onClick={() => imageInputRef.current?.click()}
+    type="button"
+  >
+    <FiImage />
+    <span>Upload Image</span>
+    <input
+      type="file"
+      accept="image/*"
+      ref={imageInputRef}
+      onChange={handleImage}
+      hidden
+    />
+  </button>
+
+  <button 
+    className="upload-card" 
+    onClick={() => videoInputRef.current?.click()}
+    type="button"
+  >
+    <FiVideo />
+    <span>Upload Video</span>
+    <input
+      type="file"
+      accept="video/*"
+      ref={videoInputRef}
+      onChange={handleVideo}
+      hidden
+    />
+  </button>
+
+  <button 
+    className="upload-card" 
+    onClick={() => fileInputRef.current?.click()}
+    type="button"
+  >
+    <FiFile />
+    <span>Upload File</span>
+    <input 
+      type="file" 
+      ref={fileInputRef} 
+      onChange={handleFile} 
+      hidden 
+    />
+  </button>
+</div>
 
           {(imagePreview || videoName || fileName) && (
             <div className="preview-row fade-in-up">

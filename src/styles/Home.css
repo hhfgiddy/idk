@@ -354,26 +354,44 @@ body {
     background 0.35s ease;
   animation: cardIn 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
   overflow: hidden;
+  min-height: 140px;
+  justify-content: space-between;
 }
 
-@keyframes cardIn {
-  from { opacity: 0; transform: translateY(24px) scale(0.96); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
+.card-content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
-.feature-card::after {
-  content: "";
+.card-footer {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-top: auto;
+}
+
+.card-label {
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--rose-deep);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.card-arrow {
   position: absolute;
-  inset: 0;
-  background: linear-gradient(120deg, transparent 30%, rgba(255, 255, 255, 0.5) 45%, transparent 60%);
-  transform: translateX(-100%);
-  transition: transform 0.8s ease;
+  right: 16px;
+  bottom: 16px;
+  color: var(--rose-deep);
+  opacity: 0.6;
+  transition: transform 0.3s ease;
 }
-
-.feature-card:hover {
-  transform: translateY(-8px) scale(1.03);
-  box-shadow: var(--shadow-pink);
-  background: var(--glass-fill-strong);
+.feature-card:hover .card-arrow {
+  transform: translateX(4px);
+  opacity: 1;
 }
 .feature-card:hover::after {
   transform: translateX(100%);
@@ -712,32 +730,62 @@ body {
 
 .upload-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: 1fr 1fr 1fr;
   gap: 12px;
+  width: 100%;
+  margin: 12px 0;
+}
+
+@media (max-width: 425px) {
+  .upload-grid {
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 320px) {
+  .upload-grid {
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 6px;
+  }
 }
 
 .upload-card {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 8px;
-  padding: 18px 8px;
+  padding: 16px 10px;
   border-radius: var(--radius-sm);
   border: 1px dashed var(--glass-border);
   background: rgba(255, 255, 255, 0.35);
   color: var(--ink-soft);
-  font-size: 0.78rem;
+  font-size: 0.75rem;
+  font-weight: 500;
   cursor: pointer;
-  transition: transform 0.25s ease, background 0.25s ease, color 0.25s ease;
+  transition: all 0.25s ease;
+  min-height: 85px;
+  width: 100%;
+  flex: 1;
+  font-family: var(--font-body);
+  box-sizing: border-box;
 }
+
 .upload-card svg {
-  font-size: 1.4rem;
+  font-size: 1.5rem;
   color: var(--rose-deep);
+  flex-shrink: 0;
 }
+
 .upload-card:hover {
   transform: translateY(-4px);
   background: rgba(255, 255, 255, 0.6);
   color: var(--ink);
+}
+
+.upload-card:active {
+  transform: translateY(-2px);
 }
 
 .preview-row {
