@@ -353,8 +353,6 @@ export default function Home() {
     const tick = () => {
       setBirthdayParts(getCountdownParts(getNextOccurrence(0, 21)));
 
-      // "Together since" is always a past date relative to now, so we anchor
-      // to the most recent April 9 that has already occurred.
       const now = new Date();
       const firstMeetingDate = new Date(now.getFullYear(), 3, 9, 21, 0, 0);
       if (firstMeetingDate.getTime() > now.getTime()) {
@@ -381,11 +379,15 @@ export default function Home() {
     }, 220);
   };
 
-  /* ---------- contact form (UI only) ---------- */
+  /* ---------- contact form with Discord ---------- */
   const [message, setMessage] = useState("");
+  const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
+  const [videoFile, setVideoFile] = useState(null);
   const [videoName, setVideoName] = useState("");
+  const [fileToUpload, setFileToUpload] = useState(null);
   const [fileName, setFileName] = useState("");
+  const [sending, setSending] = useState(false);
 
   const imageInputRef = useRef(null);
   const videoInputRef = useRef(null);
@@ -394,17 +396,114 @@ export default function Home() {
   const handleImage = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    setImageFile(file);
     setImagePreview(URL.createObjectURL(file));
   };
+
   const handleVideo = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    setVideoFile(file);
     setVideoName(file.name);
   };
+
   const handleFile = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    setFileToUpload(file);
     setFileName(file.name);
+  };
+
+  /* ---------- send to Discord with files ---------- */
+  const handleSend = async (e) => {
+    e.preventDefault();
+
+    if (!message.trim() && !imageFile && !videoFile && !fileToUpload) {
+      alert("❌ Kamida birorta narsani yuboring!");
+      return;
+    }
+
+    setSending(true);
+
+    try {
+      const WEBHOOK_URL = "https://discord.com/api/webhooks/1524277265079472218/d09r2L5NYHfZk01AIm62u1zNTZXBLoiz4qqkAF89BkxzK0LuLTSbQmyHx9biIrA2KZ6b";
+
+      const embed = {
+        title: "💌 Yangi Message Kelib Tushdi!",
+        description: message.trim() || "Fayl jo'natildi",
+        fields: [
+          {
+            name: "📸 Rasm",
+            value: imageFile ? `✅ ${imageFile.name}` : "❌ Rasm yo'q",
+            inline: true
+          },
+          {
+            name: "🎥 Video",
+            value: videoFile ? `✅ ${videoFile.name}` : "❌ Video yo'q",
+            inline: true
+          },
+          {
+            name: "📄 Fayl",
+            value: fileToUpload ? `✅ ${fileToUpload.name}` : "❌ Fayl yo'q",
+            inline: true
+          }
+        ],
+        color: 16711680,
+        timestamp: new Date().toISOString()
+      };
+
+      const formData = new FormData();
+
+      // ✅ CORRECT - payload_json OLDIN
+      formData.append("payload_json", JSON.stringify({
+        username: "Portfolio Bot 💕",
+        avatar_url: "https://cdn.discordapp.com/embed/avatars/0.png",
+        embeds: [embed]
+      }));
+
+      // ✅ Fayl'lar files[index] sifatida
+      let fileIndex = 0;
+      if (imageFile) {
+        formData.append(`files[${fileIndex}]`, imageFile, imageFile.name);
+        fileIndex++;
+      }
+      if (videoFile) {
+        formData.append(`files[${fileIndex}]`, videoFile, videoFile.name);
+        fileIndex++;
+      }
+      if (fileToUpload) {
+        formData.append(`files[${fileIndex}]`, fileToUpload, fileToUpload.name);
+        fileIndex++;
+      }
+
+      const response = await fetch(WEBHOOK_URL, {
+        method: "POST",
+        body: formData
+      });
+
+      if (response.ok || response.status === 204) {
+        alert("✅ Xabar jo'natildi!");
+        // Reset
+        setMessage("");
+        setImageFile(null);
+        setImagePreview(null);
+        setVideoFile(null);
+        setVideoName("");
+        setFileToUpload(null);
+        setFileName("");
+        if (imageInputRef.current) imageInputRef.current.value = "";
+        if (videoInputRef.current) videoInputRef.current.value = "";
+        if (fileInputRef.current) fileInputRef.current.value = "";
+      } else {
+        const errorData = await response.text();
+        alert("❌ Xato: " + (errorData || response.statusText));
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("❌ Jo'natishda xato: " + error.message);
+    } finally {
+      setSending(false);
+    }
   };
 
   /* ---------- bottom nav / scroll ---------- */
@@ -516,72 +615,72 @@ export default function Home() {
 
       {/* ================= FEATURE CARDS ================= */}
       <section className="cards-section" ref={cardsRef}>
-  <div className={`cards-grid ${cardsVisible ? "reveal-in" : "reveal-pending"}`}>
-    <button
-      className="feature-card"
-      style={{ animationDelay: "0.05s" }}
-      onClick={() => scrollTo(surpriseRef)}
-    >
-      <div className="card-content">
-        <span className="card-icon">💌</span>
-        <span className="card-title">Surprise Box</span>
-        <span className="card-sub">A little something for you</span>
-      </div>
-      <div className="card-footer">
-        <span className="card-label">Tap here</span>
-        <FiChevronRight className="card-arrow" />
-      </div>
-    </button>
+        <div className={`cards-grid ${cardsVisible ? "reveal-in" : "reveal-pending"}`}>
+          <button
+            className="feature-card"
+            style={{ animationDelay: "0.05s" }}
+            onClick={() => scrollTo(surpriseRef)}
+          >
+            <div className="card-content">
+              <span className="card-icon">💌</span>
+              <span className="card-title">Surprise Box</span>
+              <span className="card-sub">A little something for you</span>
+            </div>
+            <div className="card-footer">
+              <span className="card-label">Tap here</span>
+              <FiChevronRight className="card-arrow" />
+            </div>
+          </button>
 
-    <button
-      className="feature-card"
-      style={{ animationDelay: "0.15s" }}
-      onClick={() => scrollTo(surpriseRef)}
-    >
-      <div className="card-content">
-        <span className="card-icon">🎂</span>
-        <span className="card-title">Special Days</span>
-        <span className="card-sub">Counting every moment</span>
-      </div>
-      <div className="card-footer">
-        <span className="card-label">Upcoming</span>
-        <FiChevronRight className="card-arrow" />
-      </div>
-    </button>
+          <button
+            className="feature-card"
+            style={{ animationDelay: "0.15s" }}
+            onClick={() => scrollTo(surpriseRef)}
+          >
+            <div className="card-content">
+              <span className="card-icon">🎂</span>
+              <span className="card-title">Special Days</span>
+              <span className="card-sub">Counting every moment</span>
+            </div>
+            <div className="card-footer">
+              <span className="card-label">Upcoming</span>
+              <FiChevronRight className="card-arrow" />
+            </div>
+          </button>
 
-    <button
-      className="feature-card"
-      style={{ animationDelay: "0.25s" }}
-      onClick={() => scrollTo(loveRef)}
-    >
-      <div className="card-content">
-        <span className="card-icon">❤️</span>
-        <span className="card-title">Reasons I Love You</span>
-        <span className="card-sub">One hundred and counting</span>
-      </div>
-      <div className="card-footer">
-        <span className="card-label">Discover</span>
-        <FiChevronRight className="card-arrow" />
-      </div>
-    </button>
+          <button
+            className="feature-card"
+            style={{ animationDelay: "0.25s" }}
+            onClick={() => scrollTo(loveRef)}
+          >
+            <div className="card-content">
+              <span className="card-icon">❤️</span>
+              <span className="card-title">Reasons I Love You</span>
+              <span className="card-sub">One hundred and counting</span>
+            </div>
+            <div className="card-footer">
+              <span className="card-label">Discover</span>
+              <FiChevronRight className="card-arrow" />
+            </div>
+          </button>
 
-    <button
-      className="feature-card"
-      style={{ animationDelay: "0.35s" }}
-      onClick={() => scrollTo(contactRef)}
-    >
-      <div className="card-content">
-        <span className="card-icon">📩</span>
-        <span className="card-title">Contact Me Anytime</span>
-        <span className="card-sub">I'm always listening</span>
-      </div>
-      <div className="card-footer">
-        <span className="card-label">Message</span>
-        <FiChevronRight className="card-arrow" />
-      </div>
-    </button>
-  </div>
-</section>
+          <button
+            className="feature-card"
+            style={{ animationDelay: "0.35s" }}
+            onClick={() => scrollTo(contactRef)}
+          >
+            <div className="card-content">
+              <span className="card-icon">📩</span>
+              <span className="card-title">Contact Me Anytime</span>
+              <span className="card-sub">I'm always listening</span>
+            </div>
+            <div className="card-footer">
+              <span className="card-label">Message</span>
+              <FiChevronRight className="card-arrow" />
+            </div>
+          </button>
+        </div>
+      </section>
 
       {/* ================= SURPRISE BOX ================= */}
       <section className="surprise-section" id="surprise" ref={surpriseRef}>
@@ -683,53 +782,53 @@ export default function Home() {
           />
 
           <div className="upload-grid">
-  <button 
-    className="upload-card" 
-    onClick={() => imageInputRef.current?.click()}
-    type="button"
-  >
-    <FiImage />
-    <span>Upload Image</span>
-    <input
-      type="file"
-      accept="image/*"
-      ref={imageInputRef}
-      onChange={handleImage}
-      hidden
-    />
-  </button>
+            <button
+              className="upload-card"
+              onClick={() => imageInputRef.current?.click()}
+              type="button"
+            >
+              <FiImage />
+              <span>Upload Image</span>
+              <input
+                type="file"
+                accept="image/*"
+                ref={imageInputRef}
+                onChange={handleImage}
+                hidden
+              />
+            </button>
 
-  <button 
-    className="upload-card" 
-    onClick={() => videoInputRef.current?.click()}
-    type="button"
-  >
-    <FiVideo />
-    <span>Upload Video</span>
-    <input
-      type="file"
-      accept="video/*"
-      ref={videoInputRef}
-      onChange={handleVideo}
-      hidden
-    />
-  </button>
+            <button
+              className="upload-card"
+              onClick={() => videoInputRef.current?.click()}
+              type="button"
+            >
+              <FiVideo />
+              <span>Upload Video</span>
+              <input
+                type="file"
+                accept="video/*"
+                ref={videoInputRef}
+                onChange={handleVideo}
+                hidden
+              />
+            </button>
 
-  <button 
-    className="upload-card" 
-    onClick={() => fileInputRef.current?.click()}
-    type="button"
-  >
-    <FiFile />
-    <span>Upload File</span>
-    <input 
-      type="file" 
-      ref={fileInputRef} 
-      onChange={handleFile} 
-      hidden 
-    />
-  </button>
-</div>
+            <button
+              className="upload-card"
+              onClick={() => fileInputRef.current?.click()}
+              type="button"
+            >
+              <FiFile />
+              <span>Upload File</span>
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleFile}
+                hidden
+              />
+            </button>
+          </div>
 
           {(imagePreview || videoName || fileName) && (
             <div className="preview-row fade-in-up">
@@ -751,8 +850,12 @@ export default function Home() {
             </div>
           )}
 
-          <button className="send-btn">
-            <FiHeart /> Send
+          <button
+            className="send-btn"
+            onClick={handleSend}
+            disabled={sending}
+          >
+            <FiHeart /> {sending ? "Sending..." : "Send"}
           </button>
         </div>
       </section>
