@@ -1,54 +1,101 @@
-import React, {useState} from 'react';
-import {useNavigate} from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../styles/Registration.css';
 
-function Registration () {
-  const [name, setName] = useState ('');
-  const [key, setKey] = useState ('');
-  const navigate = useNavigate ();
+// Bu "sakina:j212013s" ning SHA-256 hashi.
+// Asl parol kodning hech qayerida ochiq matn holida yo'q.
+const CORRECT_HASH = "f55adb6e984321eecaf48ae614b1cfcbc65573a7c8367d53a3ebf95ef38c60ef";
 
-  // Enter tugmasi bosilganda ishlaydi
-  const handleRegister = () => {
-    const userName = name.trim ().toLowerCase ();
-    const userKey = key.trim ().toLowerCase ();
-
-    if (
-  userName.toLowerCase() === "sakina" &&
-  userKey.toLowerCase() === "j212013s"
-) {
-  navigate("/home");
-} else {
-  setError("❌ Name yoki Key noto'g'ri!");
+async function sha256(text) {
+  const enc = new TextEncoder().encode(text);
+  const hashBuffer = await crypto.subtle.digest("SHA-256", enc);
+  return Array.from(new Uint8Array(hashBuffer))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
 }
+
+function Registration() {
+  const [name, setName] = useState('');
+  const [key, setKey] = useState('');
+  const [error, setError] = useState('');
+  const [checking, setChecking] = useState(false);
+  const navigate = useNavigate();
+
+  // Oddiy qiziquvchilarni chalg'itish uchun: right-click va DevTools tugmalarini bloklaydi.
+  // Eslatma: bu haqiqiy himoya emas, faqat tasodifiy urinishlarni qiyinlashtiradi.
+  useEffect(() => {
+    const blockContextMenu = (e) => e.preventDefault();
+
+    const blockKeys = (e) => {
+      const key = e.key;
+      const isF12 = key === "F12";
+      const isInspect =
+        (e.ctrlKey && e.shiftKey && (key === "I" || key === "i")) ||
+        (e.ctrlKey && e.shiftKey && (key === "J" || key === "j")) ||
+        (e.ctrlKey && e.shiftKey && (key === "C" || key === "c")) ||
+        (e.ctrlKey && (key === "U" || key === "u")) ||
+        (e.metaKey && e.altKey && (key === "I" || key === "i")); // Mac Cmd+Opt+I
+
+      if (isF12 || isInspect) {
+        e.preventDefault();
+      }
+    };
+
+    document.addEventListener("contextmenu", blockContextMenu);
+    document.addEventListener("keydown", blockKeys);
+
+    return () => {
+      document.removeEventListener("contextmenu", blockContextMenu);
+      document.removeEventListener("keydown", blockKeys);
+    };
+  }, []);
+
+  const handleRegister = async () => {
+    const userName = name.trim().toLowerCase();
+    const userKey = key.trim().toLowerCase();
+
+    if (!userName || !userKey) {
+      setError("❌ Ism va key ni to'ldiring!");
+      return;
+    }
+
+    setChecking(true);
+    const inputHash = await sha256(`${userName}:${userKey}`);
+    setChecking(false);
+
+    if (inputHash === CORRECT_HASH) {
+      setError('');
+      sessionStorage.setItem("sk_auth", "true");
+      navigate("/home");
+    } else {
+      setError("❌ Name yoki Key noto'g'ri!");
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") handleRegister();
   };
 
   return (
     <div className="container">
       <h1 className="title">WELCOME TO MY SITE !</h1>
 
-      <p className="text">
-        THIS SITE CREATED ONLY FOR YOU ♥
-      </p>
+      <p className="text">THIS SITE CREATED ONLY FOR YOU ♥</p>
 
-      <p className="test">
-        I WANT TO KNOW IF IT'S REALLY YOU
-      </p>
+      <p className="test">I WANT TO KNOW IF IT'S REALLY YOU</p>
 
       <div className="reg__ota">
         <div className="name_ota">
-          <label htmlFor="name">
-            Enter your name
-          </label>
-
+          <label htmlFor="name">Enter your name</label>
           <br />
-
           <input
             id="name"
             className="name-inp"
-            type="text"
+            type="password"
             placeholder="Enter your name here..."
             value={name}
-            onChange={e => setName (e.target.value)}
+            onChange={(e) => setName(e.target.value)}
+            onKeyDown={handleKeyDown}
             autoComplete="off"
           />
         </div>
@@ -56,26 +103,26 @@ function Registration () {
         <br />
 
         <div className="key_ota">
-          <label htmlFor="key">
-            Enter the key I told you
-          </label>
-
+          <label htmlFor="key">Enter the key I told you</label>
           <br />
-
           <input
             id="key"
             className="key-inp"
             type="password"
             placeholder="Enter the key here..."
             value={key}
-            onChange={e => setKey (e.target.value)}
+            onChange={(e) => setKey(e.target.value)}
+            onKeyDown={handleKeyDown}
+            autoComplete="off"
           />
         </div>
 
         <br />
 
-        <button onClick={handleRegister}>
-          Enter
+        {error && <p className="reg-error">{error}</p>}
+
+        <button onClick={handleRegister} disabled={checking}>
+          {checking ? "Checking..." : "Enter"}
         </button>
       </div>
     </div>

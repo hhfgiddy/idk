@@ -6,9 +6,13 @@ import {
   FiMail,
   FiImage,
   FiVideo,
-  FiFile,
   FiSend,
   FiChevronRight,
+  FiMic,
+  FiSquare,
+  FiTrash2,
+  FiPlay,
+  FiPause,
 } from "react-icons/fi";
 import { BsStars } from "react-icons/bs";
 import "../styles/Home.css";
@@ -281,6 +285,88 @@ function useRevealOnScroll() {
   return [ref, visible];
 }
 
+function formatTime(s) {
+  const m = Math.floor(s / 60);
+  const sec = s % 60;
+  return `${String(m).padStart(2, "0")}:${String(sec).padStart(2, "0")}`;
+}
+
+/* =========================================================
+   WEBM -> WAV CONVERSION (Discord webm audio'ni to'g'ri
+   pleyer bilan ko'rsatmasligi mumkin, shuning uchun WAV'ga
+   o'giramiz — bu Discord'da har doim to'liq audio pleyer bilan ochiladi)
+========================================================= */
+
+function writeWavString(view, offset, str) {
+  for (let i = 0; i < str.length; i++) {
+    view.setUint8(offset + i, str.charCodeAt(i));
+  }
+}
+
+function floatTo16BitPCM(view, offset, input) {
+  for (let i = 0; i < input.length; i++, offset += 2) {
+    const s = Math.max(-1, Math.min(1, input[i]));
+    view.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7fff, true);
+  }
+}
+
+function interleaveChannels(inputL, inputR) {
+  const length = inputL.length + inputR.length;
+  const result = new Float32Array(length);
+  let index = 0;
+  let inputIndex = 0;
+  while (index < length) {
+    result[index++] = inputL[inputIndex];
+    result[index++] = inputR[inputIndex];
+    inputIndex++;
+  }
+  return result;
+}
+
+function audioBufferToWav(buffer) {
+  const numChannels = buffer.numberOfChannels;
+  const sampleRate = buffer.sampleRate;
+  const bitDepth = 16;
+
+  const samples =
+    numChannels === 2
+      ? interleaveChannels(buffer.getChannelData(0), buffer.getChannelData(1))
+      : buffer.getChannelData(0);
+
+  const bytesPerSample = bitDepth / 8;
+  const blockAlign = numChannels * bytesPerSample;
+  const arrayBuffer = new ArrayBuffer(44 + samples.length * bytesPerSample);
+  const view = new DataView(arrayBuffer);
+
+  writeWavString(view, 0, "RIFF");
+  view.setUint32(4, 36 + samples.length * bytesPerSample, true);
+  writeWavString(view, 8, "WAVE");
+  writeWavString(view, 12, "fmt ");
+  view.setUint32(16, 16, true);
+  view.setUint16(20, 1, true); // PCM
+  view.setUint16(22, numChannels, true);
+  view.setUint32(24, sampleRate, true);
+  view.setUint32(28, sampleRate * blockAlign, true);
+  view.setUint16(32, blockAlign, true);
+  view.setUint16(34, bitDepth, true);
+  writeWavString(view, 36, "data");
+  view.setUint32(40, samples.length * bytesPerSample, true);
+
+  floatTo16BitPCM(view, 44, samples);
+
+  return arrayBuffer;
+}
+
+async function convertBlobToWav(sourceBlob) {
+  const arrayBuffer = await sourceBlob.arrayBuffer();
+  const AudioCtx = window.AudioContext || window.webkitAudioContext;
+  const audioCtx = new AudioCtx();
+  const decoded = await audioCtx.decodeAudioData(arrayBuffer);
+  const wavArrayBuffer = audioBufferToWav(decoded);
+  audioCtx.close();
+  return new Blob([wavArrayBuffer], { type: "audio/wav" });
+}
+
 /* =========================================================
    MAIN COMPONENT
 ========================================================= */
@@ -379,19 +465,16 @@ export default function Home() {
     }, 220);
   };
 
-  /* ---------- contact form with Discord ---------- */
+  /* ---------- contact form ---------- */
   const [message, setMessage] = useState("");
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [videoFile, setVideoFile] = useState(null);
   const [videoName, setVideoName] = useState("");
-  const [fileToUpload, setFileToUpload] = useState(null);
-  const [fileName, setFileName] = useState("");
   const [sending, setSending] = useState(false);
 
   const imageInputRef = useRef(null);
   const videoInputRef = useRef(null);
-  const fileInputRef = useRef(null);
 
   const handleImage = (e) => {
     const file = e.target.files?.[0];
@@ -407,18 +490,88 @@ export default function Home() {
     setVideoName(file.name);
   };
 
-  const handleFile = (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setFileToUpload(file);
-    setFileName(file.name);
+  /* ---------- voice message recording ---------- */
+  const [isRecording, setIsRecording] = useState(false);
+  const [recordSeconds, setRecordSeconds] = useState(0);
+  const [audioBlob, setAudioBlob] = useState(null);
+  const [audioURL, setAudioURL] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  const mediaRecorderRef = useRef(null);
+  const chunksRef = useRef([]);
+  const timerRef = useRef(null);
+  const audioPlayerRef = useRef(null);
+
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const recorder = new MediaRecorder(stream);
+      mediaRecorderRef.current = recorder;
+      chunksRef.current = [];
+
+      recorder.ondataavailable = (e) => {
+        if (e.data.size > 0) chunksRef.current.push(e.data);
+      };
+
+      recorder.onstop = async () => {
+        const webmBlob = new Blob(chunksRef.current, { type: "audio/webm" });
+        stream.getTracks().forEach((track) => track.stop());
+
+        try {
+          const wavBlob = await convertBlobToWav(webmBlob);
+          setAudioBlob(wavBlob);
+          setAudioURL(URL.createObjectURL(wavBlob));
+        } catch (err) {
+          console.log("WAV conversion failed, falling back to webm:", err);
+          setAudioBlob(webmBlob);
+          setAudioURL(URL.createObjectURL(webmBlob));
+        }
+      };
+
+      recorder.start();
+      setIsRecording(true);
+      setRecordSeconds(0);
+      timerRef.current = setInterval(() => {
+        setRecordSeconds((s) => s + 1);
+      }, 1000);
+    } catch (err) {
+      alert("🎙️ Mikrofonga ruxsat berilmadi: " + err.message);
+    }
   };
+
+  const stopRecording = () => {
+    mediaRecorderRef.current?.stop();
+    setIsRecording(false);
+    clearInterval(timerRef.current);
+  };
+
+  const deleteRecording = () => {
+    setAudioBlob(null);
+    setAudioURL(null);
+    setIsPlaying(false);
+    setRecordSeconds(0);
+  };
+
+  const togglePlay = () => {
+    const player = audioPlayerRef.current;
+    if (!player) return;
+    if (isPlaying) {
+      player.pause();
+    } else {
+      player.play();
+    }
+    setIsPlaying(!isPlaying);
+  };
+
+  useEffect(() => {
+    return () => clearInterval(timerRef.current);
+  }, []);
 
   /* ---------- send to Discord with files ---------- */
   const handleSend = async (e) => {
     e.preventDefault();
 
-    if (!message.trim() && !imageFile && !videoFile && !fileToUpload) {
+    if (!message.trim() && !imageFile && !videoFile && !audioBlob) {
       alert("❌ Kamida birorta narsani yuboring!");
       return;
     }
@@ -443,8 +596,8 @@ export default function Home() {
             inline: true
           },
           {
-            name: "📄 Fayl",
-            value: fileToUpload ? `✅ ${fileToUpload.name}` : "❌ Fayl yo'q",
+            name: "🎙️ Voice",
+            value: audioBlob ? `✅ ${formatTime(recordSeconds)}` : "❌ Voice yo'q",
             inline: true
           }
         ],
@@ -454,14 +607,12 @@ export default function Home() {
 
       const formData = new FormData();
 
-      // ✅ CORRECT - payload_json OLDIN
       formData.append("payload_json", JSON.stringify({
         username: "Portfolio Bot 💕",
         avatar_url: "https://cdn.discordapp.com/embed/avatars/0.png",
         embeds: [embed]
       }));
 
-      // ✅ Fayl'lar files[index] sifatida
       let fileIndex = 0;
       if (imageFile) {
         formData.append(`files[${fileIndex}]`, imageFile, imageFile.name);
@@ -471,8 +622,8 @@ export default function Home() {
         formData.append(`files[${fileIndex}]`, videoFile, videoFile.name);
         fileIndex++;
       }
-      if (fileToUpload) {
-        formData.append(`files[${fileIndex}]`, fileToUpload, fileToUpload.name);
+      if (audioBlob) {
+        formData.append(`files[${fileIndex}]`, audioBlob, `voice-${Date.now()}.wav`);
         fileIndex++;
       }
 
@@ -483,17 +634,14 @@ export default function Home() {
 
       if (response.ok || response.status === 204) {
         alert("✅ Xabar jo'natildi!");
-        // Reset
         setMessage("");
         setImageFile(null);
         setImagePreview(null);
         setVideoFile(null);
         setVideoName("");
-        setFileToUpload(null);
-        setFileName("");
+        deleteRecording();
         if (imageInputRef.current) imageInputRef.current.value = "";
         if (videoInputRef.current) videoInputRef.current.value = "";
-        if (fileInputRef.current) fileInputRef.current.value = "";
       } else {
         const errorData = await response.text();
         alert("❌ Xato: " + (errorData || response.statusText));
@@ -814,23 +962,42 @@ export default function Home() {
               />
             </button>
 
-            <button
-              className="upload-card"
-              onClick={() => fileInputRef.current?.click()}
-              type="button"
-            >
-              <FiFile />
-              <span>Upload File</span>
-              <input
-                type="file"
-                ref={fileInputRef}
-                onChange={handleFile}
-                hidden
-              />
-            </button>
+            <div className="voice-recorder">
+              {!audioURL && !isRecording && (
+                <button className="upload-card" onClick={startRecording} type="button">
+                  <FiMic />
+                  <span>Record Voice</span>
+                </button>
+              )}
+
+              {isRecording && (
+                <button className="upload-card recording" onClick={stopRecording} type="button">
+                  <FiSquare />
+                  <span>Stop • {formatTime(recordSeconds)}</span>
+                </button>
+              )}
+
+              {audioURL && !isRecording && (
+                <div className="voice-preview">
+                  <audio
+                    ref={audioPlayerRef}
+                    src={audioURL}
+                    onEnded={() => setIsPlaying(false)}
+                    hidden
+                  />
+                  <button className="voice-play-btn" onClick={togglePlay} type="button">
+                    {isPlaying ? <FiPause /> : <FiPlay />}
+                  </button>
+                  <span className="voice-duration">{formatTime(recordSeconds)}</span>
+                  <button className="voice-delete-btn" onClick={deleteRecording} type="button">
+                    <FiTrash2 />
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
 
-          {(imagePreview || videoName || fileName) && (
+          {(imagePreview || videoName) && (
             <div className="preview-row fade-in-up">
               {imagePreview && (
                 <div className="preview-chip">
@@ -840,11 +1007,6 @@ export default function Home() {
               {videoName && (
                 <div className="preview-chip preview-chip-text">
                   <FiVideo /> {videoName}
-                </div>
-              )}
-              {fileName && (
-                <div className="preview-chip preview-chip-text">
-                  <FiFile /> {fileName}
                 </div>
               )}
             </div>

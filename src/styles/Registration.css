@@ -212,3 +212,9 @@ button{
 }
 
 }
+
+.reg-error {
+  color: #ff5c7a;
+  font-size: 14px;
+  margin: 8px 0;
+}

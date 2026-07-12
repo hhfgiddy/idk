@@ -950,3 +950,46 @@ body {
     gap: 8px;
   }
 }
+
+.voice-recorder {
+  display: flex;
+  align-items: center;
+}
+
+.upload-card.recording {
+  animation: pulse-rec 1s infinite;
+  border-color: #ff5c7a;
+  color: #ff5c7a;
+}
+
+@keyframes pulse-rec {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}
+
+.voice-preview {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 10px 14px;
+  width: 100%;
+}
+
+.voice-play-btn,
+.voice-delete-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  color: inherit;
+  display: flex;
+  align-items: center;
+}
+
+.voice-duration {
+  flex: 1;
+  font-size: 14px;
+  opacity: 0.85;
+}
