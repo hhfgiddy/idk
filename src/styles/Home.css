@@ -1,7 +1,3 @@
-/* ← HOME.CSS BOSHIDAGI SECTION O'ZGARTIRISH ← */
-
-/* LINE 25 - 45 QAVATINI QUYIDAGICHA O'ZGARTIR: */
-
 .home-page {
   --blush-100: #fff1f4;
   --blush-300: #ffd6e0;
@@ -26,14 +22,14 @@
   min-height: 100vh;
   width: 100%;
   overflow-x: hidden;
-  overflow-y: auto; /* ← QUSHILDI */
+  overflow-y: auto;
   background: linear-gradient(180deg, #ffb6c8 0%, #ffcda7 55%, #ffd6b5 100%);
   background-attachment: fixed;
   font-family: var(--font-body);
   color: var(--ink);
-  padding-bottom: 140px; /* ← 120px -> 140px */
+  padding-bottom: 140px;
   -webkit-font-smoothing: antialiased;
-  scroll-behavior: smooth; /* ← QUSHILDI */
+  scroll-behavior: smooth;
 }
 
 html {
@@ -121,8 +117,13 @@ body {
 }
 
 @keyframes drift {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(20px, -30px) scale(1.08); }
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(20px, -30px) scale(1.08);
+  }
 }
 
 .floating-heart,
@@ -138,11 +139,23 @@ body {
 }
 
 @keyframes floatUp {
-  0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0; }
-  10% { opacity: 0.85; }
-  50% { transform: translateY(-55vh) translateX(20px) rotate(15deg); }
-  90% { opacity: 0.5; }
-  100% { transform: translateY(-115vh) translateX(-15px) rotate(-10deg); opacity: 0; }
+  0% {
+    transform: translateY(0) translateX(0) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.85;
+  }
+  50% {
+    transform: translateY(-55vh) translateX(20px) rotate(15deg);
+  }
+  90% {
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateY(-115vh) translateX(-15px) rotate(-10deg);
+    opacity: 0;
+  }
 }
 
 /* =========================================================
@@ -156,7 +169,10 @@ body {
   animation: revealIn 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 @keyframes revealIn {
-  to { opacity: 1; transform: translateY(0); }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* =========================================================
@@ -169,7 +185,9 @@ body {
   border-radius: var(--radius-lg);
   backdrop-filter: blur(22px) saturate(160%);
   -webkit-backdrop-filter: blur(22px) saturate(160%);
-  box-shadow: var(--shadow-pink-soft), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  box-shadow:
+    var(--shadow-pink-soft),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 
 .section-title {
@@ -223,8 +241,13 @@ body {
 }
 
 @keyframes gentlePulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(232, 95, 137, 0.25); }
-  50% { box-shadow: 0 0 0 10px rgba(232, 95, 137, 0); }
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(232, 95, 137, 0.25);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(232, 95, 137, 0);
+  }
 }
 
 .hero-title {
@@ -245,10 +268,19 @@ body {
 }
 
 @keyframes heartbeat {
-  0%, 100% { transform: scale(1); }
-  25% { transform: scale(1.18); }
-  40% { transform: scale(1); }
-  60% { transform: scale(1.1); }
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  25% {
+    transform: scale(1.18);
+  }
+  40% {
+    transform: scale(1);
+  }
+  60% {
+    transform: scale(1.1);
+  }
 }
 
 .hero-quote {
@@ -275,14 +307,23 @@ body {
 }
 
 @keyframes floatCard {
-  0%, 100% { transform: translateY(0) rotate(-0.4deg); }
-  50% { transform: translateY(-16px) rotate(0.4deg); }
+  0%,
+  100% {
+    transform: translateY(0) rotate(-0.4deg);
+  }
+  50% {
+    transform: translateY(-16px) rotate(0.4deg);
+  }
 }
 
 .hero-image-glow {
   position: absolute;
   inset: -30px;
-  background: radial-gradient(circle, rgba(255, 182, 200, 0.55), transparent 70%);
+  background: radial-gradient(
+    circle,
+    rgba(255, 182, 200, 0.55),
+    transparent 70%
+  );
   filter: blur(20px);
   z-index: -1;
 }
@@ -313,8 +354,13 @@ body {
 }
 
 @keyframes sealGlow {
-  0%, 100% { box-shadow: 0 10px 24px rgba(232, 95, 137, 0.45); }
-  50% { box-shadow: 0 10px 34px rgba(232, 95, 137, 0.75); }
+  0%,
+  100% {
+    box-shadow: 0 10px 24px rgba(232, 95, 137, 0.45);
+  }
+  50% {
+    box-shadow: 0 10px 34px rgba(232, 95, 137, 0.75);
+  }
 }
 
 /* =========================================================
@@ -350,7 +396,9 @@ body {
   cursor: pointer;
   font-family: var(--font-body);
   box-shadow: var(--shadow-pink-soft);
-  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease,
+  transition:
+    transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.35s ease,
     background 0.35s ease;
   animation: cardIn 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
   overflow: hidden;
@@ -413,18 +461,6 @@ body {
   font-size: 0.78rem;
   color: var(--ink-soft);
 }
-.card-arrow {
-  position: absolute;
-  right: 16px;
-  bottom: 16px;
-  color: var(--rose-deep);
-  opacity: 0.6;
-  transition: transform 0.3s ease;
-}
-.feature-card:hover .card-arrow {
-  transform: translateX(4px);
-  opacity: 1;
-}
 
 /* =========================================================
    SURPRISE BOX
@@ -453,7 +489,11 @@ body {
   height: 110px;
   border-radius: 28px;
   border: 1px solid var(--glass-border);
-  background: linear-gradient(160deg, var(--glass-fill-strong), var(--blush-300));
+  background: linear-gradient(
+    160deg,
+    var(--glass-fill-strong),
+    var(--blush-300)
+  );
   box-shadow: var(--shadow-pink);
   font-size: 2.6rem;
   color: var(--rose-deep);
@@ -461,7 +501,9 @@ body {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 .gift-box:hover:not(:disabled) {
   transform: scale(1.06);
@@ -476,13 +518,28 @@ body {
 }
 
 @keyframes giftShake {
-  0%, 100% { transform: rotate(0deg); }
-  15% { transform: rotate(-10deg); }
-  30% { transform: rotate(9deg); }
-  45% { transform: rotate(-7deg); }
-  60% { transform: rotate(6deg); }
-  75% { transform: rotate(-4deg); }
-  90% { transform: rotate(2deg); }
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  15% {
+    transform: rotate(-10deg);
+  }
+  30% {
+    transform: rotate(9deg);
+  }
+  45% {
+    transform: rotate(-7deg);
+  }
+  60% {
+    transform: rotate(6deg);
+  }
+  75% {
+    transform: rotate(-4deg);
+  }
+  90% {
+    transform: rotate(2deg);
+  }
 }
 
 .surprise-message-card {
@@ -510,8 +567,14 @@ body {
   z-index: 5;
 }
 @keyframes confettiFall {
-  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-  100% { transform: translateY(280px) rotate(540deg); opacity: 0; }
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(280px) rotate(540deg);
+    opacity: 0;
+  }
 }
 
 /* =========================================================
@@ -623,12 +686,24 @@ body {
   animation: fadeOutDown 0.22s ease forwards;
 }
 @keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(14px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 @keyframes fadeOutDown {
-  from { opacity: 1; transform: translateY(0); }
-  to { opacity: 0; transform: translateY(-10px); }
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
 }
 
 .primary-btn,
@@ -647,7 +722,9 @@ body {
   font-size: 0.95rem;
   cursor: pointer;
   box-shadow: var(--shadow-pink-soft);
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
 }
 .primary-btn:hover,
 .send-btn:hover {
@@ -669,7 +746,9 @@ body {
   background: rgba(255, 255, 255, 0.5);
   border-radius: 50%;
   transform: translate(-50%, -50%);
-  transition: width 0.5s ease, height 0.5s ease;
+  transition:
+    width 0.5s ease,
+    height 0.5s ease;
 }
 .primary-btn:active::after,
 .send-btn:active::after {
@@ -708,6 +787,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 18px;
+  overflow: hidden;
 }
 
 .contact-textarea {
@@ -721,16 +801,19 @@ body {
   color: var(--ink);
   resize: vertical;
   outline: none;
-  transition: box-shadow 0.25s ease, border-color 0.25s ease;
+  transition:
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
 }
 .contact-textarea:focus {
   border-color: var(--rose-deep);
   box-shadow: 0 0 0 4px rgba(232, 95, 137, 0.15);
 }
 
+/* ---------- UPLOAD GRID: Image + Video (2 columns), Voice = full row below ---------- */
 .upload-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr;
   gap: 12px;
   width: 100%;
   margin: 12px 0;
@@ -738,14 +821,14 @@ body {
 
 @media (max-width: 425px) {
   .upload-grid {
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
     gap: 8px;
   }
 }
 
 @media (max-width: 320px) {
   .upload-grid {
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
     gap: 6px;
   }
 }
@@ -767,7 +850,6 @@ body {
   transition: all 0.25s ease;
   min-height: 85px;
   width: 100%;
-  flex: 1;
   font-family: var(--font-body);
   box-sizing: border-box;
 }
@@ -819,6 +901,68 @@ body {
   padding: 14px 40px;
 }
 
+/* ---------- VOICE RECORDER — spans full width below Image/Video ---------- */
+.voice-recorder {
+  grid-column: 1 / -1;
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.voice-recorder .upload-card {
+  width: 100%;
+}
+
+.upload-card.recording {
+  animation: pulse-rec 1s infinite;
+  border-color: #ff5c7a;
+  color: #ff5c7a;
+}
+
+@keyframes pulse-rec {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+
+.voice-preview {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.4);
+  border: 1px dashed var(--glass-border);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.voice-play-btn,
+.voice-delete-btn {
+  flex: 0 0 auto;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  color: var(--rose-deep);
+  display: flex;
+  align-items: center;
+}
+
+.voice-duration {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 14px;
+  color: var(--ink);
+  opacity: 0.85;
+}
+
 /* =========================================================
    BOTTOM NAVIGATION — FIXED
 ========================================================= */
@@ -853,7 +997,10 @@ body {
   border-radius: 999px;
   font-size: 0.62rem;
   cursor: pointer;
-  transition: color 0.25s ease, background 0.25s ease, transform 0.25s ease;
+  transition:
+    color 0.25s ease,
+    background 0.25s ease,
+    transform 0.25s ease;
   white-space: nowrap;
 }
 .bottom-nav button svg {
@@ -902,10 +1049,6 @@ body {
   .time-value {
     font-size: 1.2rem;
   }
-  .upload-grid {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-  }
   .bottom-nav {
     gap: 2px;
     padding: 8px 10px;
@@ -949,47 +1092,4 @@ body {
   .time-row-wide {
     gap: 8px;
   }
-}
-
-.voice-recorder {
-  display: flex;
-  align-items: center;
-}
-
-.upload-card.recording {
-  animation: pulse-rec 1s infinite;
-  border-color: #ff5c7a;
-  color: #ff5c7a;
-}
-
-@keyframes pulse-rec {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.55; }
-}
-
-.voice-preview {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 14px;
-  padding: 10px 14px;
-  width: 100%;
-}
-
-.voice-play-btn,
-.voice-delete-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 18px;
-  color: inherit;
-  display: flex;
-  align-items: center;
-}
-
-.voice-duration {
-  flex: 1;
-  font-size: 14px;
-  opacity: 0.85;
 }

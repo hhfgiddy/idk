@@ -75,8 +75,26 @@ function Registration() {
   const handleKeyDown = (e) => {
     if (e.key === "Enter") handleRegister();
   };
+return (
+  <div className="registration-page">
+  <div className="ambient-layer">
+    {[...Array(20)].map((_, i) => (
+      <span
+        key={i}
+        className={Math.random() > 0.5 ? "floating-heart" : "floating-petal"}
+        style={{
+          left: `${Math.random() * 100}%`,
+          animationDuration: `${12 + Math.random() * 8}s`,
+          animationDelay: `${Math.random() * 8}s`,
+          fontSize: `${14 + Math.random() * 12}px`
+        }}
+      >
+        {Math.random() > 0.5 ? "🤍" : "🌸"}
+      </span>
+    ))}
 
-  return (
+  </div>
+
     <div className="container">
       <h1 className="title">WELCOME TO MY SITE !</h1>
 
@@ -85,9 +103,10 @@ function Registration() {
       <p className="test">I WANT TO KNOW IF IT'S REALLY YOU</p>
 
       <div className="reg__ota">
+
         <div className="name_ota">
           <label htmlFor="name">Enter your name</label>
-          <br />
+
           <input
             id="name"
             className="name-inp"
@@ -100,11 +119,9 @@ function Registration() {
           />
         </div>
 
-        <br />
-
         <div className="key_ota">
           <label htmlFor="key">Enter the key I told you</label>
-          <br />
+
           <input
             id="key"
             className="key-inp"
@@ -117,16 +134,18 @@ function Registration() {
           />
         </div>
 
-        <br />
-
         {error && <p className="reg-error">{error}</p>}
 
         <button onClick={handleRegister} disabled={checking}>
           {checking ? "Checking..." : "Enter"}
         </button>
+
       </div>
     </div>
-  );
+
+  </div>
+);
+ 
 }
 
 export default Registration;
