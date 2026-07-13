@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   FiHeart,
   FiHome,
@@ -13,6 +14,7 @@ import {
   FiTrash2,
   FiPlay,
   FiPause,
+  FiMessageCircle,
 } from "react-icons/fi";
 import { BsStars } from "react-icons/bs";
 import "../styles/Home.css";
@@ -372,6 +374,8 @@ async function convertBlobToWav(sourceBlob) {
 ========================================================= */
 
 export default function Home() {
+  const navigate = useNavigate();
+
   /* ---------- greeting ---------- */
   const [greeting, setGreeting] = useState("");
 
@@ -827,6 +831,25 @@ export default function Home() {
               <FiChevronRight className="card-arrow" />
             </div>
           </button>
+
+
+          <button
+            className="feature-card chat-feature-card"
+            style={{ animationDelay: "0.45s" }}
+            onClick={() => navigate("/chat")}
+          >
+            <div className="card-content">
+              <span className="card-icon">
+                <FiMessageCircle />
+              </span>
+              <span className="card-title">Private Chat</span>
+              <span className="card-sub">A private place only for us</span>
+            </div>
+            <div className="card-footer">
+              <span className="card-label">Open Chat</span>
+              <FiChevronRight className="card-arrow" />
+            </div>
+          </button>
         </div>
       </section>
 
@@ -1039,6 +1062,10 @@ export default function Home() {
         <button onClick={() => scrollTo(contactRef)} aria-label="Contact">
           <FiMail />
           <span>Contact</span>
+        </button>
+        <button onClick={() => navigate("/chat")} aria-label="Chat">
+          <FiMessageCircle />
+          <span>Chat</span>
         </button>
       </nav>
     </div>
